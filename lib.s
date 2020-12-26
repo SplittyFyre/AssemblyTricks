@@ -1,10 +1,15 @@
 section .data
 	newline db 10
 
+section .bss
+	numbuf resb 32
+
 section .text
 	global strlen
 	global puts	
 	global putnl
+	global puti
+	global putu
 
 ; takes in string in rax
 ; returns nullbyte address in rax, length in rcx
@@ -31,7 +36,6 @@ puts:
 	syscall
 	ret
 
-
 putnl:
 	mov rax, 1
 	mov rdi, 1
@@ -39,3 +43,73 @@ putnl:
 	mov rdx, 1
 	syscall
 	ret
+
+
+; rax contains value
+puti:
+	; set r8 to end of buffer
+	mov r8, numbuf
+	add r8, 31
+
+	xor rcx, rcx	; rcx length of string
+	mov r9, 10	; don't know why can't div by literal
+
+	mov r10b, 0
+	test rax, rax	; is negative?
+	jns puti_loop
+	mov r10b, 1
+	neg rax
+puti_loop:
+	dec r8
+	inc rcx
+
+	xor rdx, rdx
+	div r9
+	add rdx, 48
+	mov [r8], dl
+	
+	test rax, rax	; continue loop until zero
+	jnz puti_loop
+
+	test r10b, r10b
+	jz puti_syscall
+	
+	dec r8
+	inc rcx
+	mov byte [r8], '-'	
+
+puti_syscall:
+	mov rax, 1
+	mov rdi, 1
+	mov rsi, r8
+	mov rdx, rcx
+	syscall
+	ret
+
+
+putu:
+        ; set r8 to end of buffer
+        mov r8, numbuf
+        add r8, 31
+
+        xor rcx, rcx    ; rcx length of string
+        mov r9, 10      ; don't know why can't div by literal
+
+putu_loop:
+        dec r8
+        inc rcx
+
+        xor rdx, rdx
+        div r9
+        add rdx, 48
+        mov [r8], dl
+
+        test rax, rax   ; continue loop until zero
+        jnz putu_loop
+
+        mov rax, 1
+        mov rdi, 1
+        mov rsi, r8
+        mov rdx, rcx
+        syscall
+        ret

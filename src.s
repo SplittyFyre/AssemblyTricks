@@ -7,6 +7,8 @@ section .text
 	
 	extern puts
 	extern putnl
+	extern putu
+	extern puti
 
 _start:
 	mov rax, text
@@ -16,6 +18,17 @@ _start:
 	call putnl
 	call putnl
 	call putnl
+
+	mov rbx, -10
+_for:
+	mov rax, rbx
+	call puti
+	call putnl
+
+	inc rbx
+
+	cmp rbx, 10
+	jle _for	
 
 	mov rax, 60
 	mov rdi, 0
