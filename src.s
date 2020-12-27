@@ -5,30 +5,36 @@ section .data
 section .text
 	global _start
 	
+	extern flushout
+	extern putchar
 	extern puts
 	extern putnl
 	extern putu
 	extern puti
 
 _start:
+	mov al, 'P'
+	call putchar
+	mov al, 'E'
+	call putchar
+	mov al, 'G'
+	call putchar
+	call putnl
+
 	mov rax, text
 	call puts
 	mov rax, text1
-	call puts	
-	call putnl
-	call putnl
-	call putnl
+	call puts
 
-	mov rbx, -10
-_for:
-	mov rax, rbx
+	mov rax, -133742069
 	call puti
 	call putnl
 
-	inc rbx
+	mov rax, -1
+	call putu
+	call putnl
 
-	cmp rbx, 10
-	jle _for	
+	call flushout
 
 	mov rax, 60
 	mov rdi, 0
