@@ -5,12 +5,14 @@ section .data
 section .text
 	global _start
 	
+	extern getchar
 	extern flushout
 	extern putchar
 	extern puts
 	extern putnl
 	extern putu
 	extern puti
+	extern scanu
 
 _start:
 	mov al, 'P'
@@ -36,6 +38,15 @@ _start:
 
 	call flushout
 
+	call scanu
+	push rax
+	call scanu
+	pop rbx
+	add rax, rbx
+	call putu
+	call putnl
+	call flushout
+	
 	mov rax, 60
 	mov rdi, 0
 	syscall

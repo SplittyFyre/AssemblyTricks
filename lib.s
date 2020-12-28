@@ -2,9 +2,11 @@ section .data
 	newline db 10
 	BUFLEN equ 1 << 15
 	
+	ibi dq BUFLEN
 	obi dq 0
 
 section .bss
+	inbuf  resb BUFLEN
 	outbuf resb BUFLEN
 	numbuf resb 32
 
@@ -15,6 +17,8 @@ section .text
 	global putnl
 	global puti
 	global putu
+
+	global getchar
 	global scanu
 
 flushout:
@@ -122,3 +126,60 @@ putu_end:
 	mov rax, r8
 	call puts
 	ret
+
+
+
+
+
+; puts char into cl
+getchar:
+	cmp qword [ibi], BUFLEN
+	jl getchar_end
+
+; fill input buffer:
+	mov qword [ibi], 0
+	
+	push rax
+	xor rax, rax
+	xor rdi, rdi
+	mov rsi, inbuf
+	mov rdx, BUFLEN
+	syscall
+	mov rdx, rax
+	pop rax
+
+	cmp rdx, BUFLEN
+	je getchar_end
+
+	mov byte [inbuf + rdx], 0
+
+getchar_end:
+	mov rdx, [ibi]
+	xor rcx, rcx
+	mov cl, [inbuf + rdx]	
+	inc qword [ibi]
+	ret
+
+
+
+; scans unsigned value into rax
+scanu:
+	xor rax, rax
+	mov r8, 10
+scanu_strip:
+	call getchar
+	cmp cl, '0'
+	jl scanu_strip
+scanu_loop:
+	mul r8
+	sub cl, '0'
+	add rax, rcx
+	call getchar
+	cmp cl, '0'
+	jge scanu_loop
+	dec qword [ibi]
+	ret
+
+
+
+
