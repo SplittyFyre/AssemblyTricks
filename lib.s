@@ -1,6 +1,6 @@
 section .data
 	newline db 10
-	BUFLEN equ 1 << 15
+	BUFLEN equ 4
 	
 	ibi dq BUFLEN
 	obi dq 0
@@ -24,11 +24,13 @@ section .text
 flushout:
 	cmp qword [obi], 0
 	je flushout_end
+	push rcx
 	mov rax, 1
 	mov rdi, 1
 	mov rsi, outbuf
 	mov rdx, qword [obi]
 	syscall
+	pop rcx
 	mov qword [obi], 0
 flushout_end:
 	ret

@@ -1,7 +1,3 @@
-section .data
-	text db "Hello, World!", 10, 0
-	text1 db "IAMMORETEXT", 10, "More!", 10, 0, "Nothere!"
-
 section .text
 	global _start
 	
@@ -15,38 +11,16 @@ section .text
 	extern scanu
 
 _start:
-	mov al, 'P'
-	call putchar
-	mov al, 'E'
-	call putchar
-	mov al, 'G'
-	call putchar
-	call putnl
 
-	mov rax, text
-	call puts
-	mov rax, text1
-	call puts
-
-	mov rax, -133742069
-	call puti
-	call putnl
-
-	mov rax, -1
+	mov rax, 123456
 	call putu
 	call putnl
 
-	call flushout
-
-	call scanu
-	push rax
-	call scanu
-	pop rbx
-	add rax, rbx
+	mov rax, 42069
 	call putu
 	call putnl
 	call flushout
-	
+
 	mov rax, 60
 	mov rdi, 0
 	syscall
